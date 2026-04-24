@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { RevealOnScroll } from "@/components/landing/RevealOnScroll";
 import { ServicesSection } from "@/components/landing/ServicesSection";
+import { Suspense } from "react";
 
 export default function Home() {
   const localBusinessSchema = {
@@ -44,7 +45,15 @@ export default function Home() {
           <ServicesSection />
         </RevealOnScroll>
         <RevealOnScroll delayMs={120}>
-          <BookingSection />
+          <Suspense
+            fallback={
+              <section className="mx-auto w-full max-w-6xl px-5 py-10">
+                <div className="h-80 animate-pulse rounded-3xl border border-brand-gold/20 bg-black/40" />
+              </section>
+            }
+          >
+            <BookingSection />
+          </Suspense>
         </RevealOnScroll>
       </main>
       <FooterSection />
