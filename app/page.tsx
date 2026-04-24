@@ -11,7 +11,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "BarberShop",
     name: "Império Barbearia",
-    description: "Barbearia premium no Centro de São Paulo com agendamento online.",
+    description: "Império Barbearia em Itapecerica da Serra com agendamento online.",
     image: "/imperio-logo.png",
     telephone: "+55 11 99999-9999",
     address: {

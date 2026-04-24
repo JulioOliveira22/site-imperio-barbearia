@@ -15,19 +15,19 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "Império Barbearia no Centro de São Paulo | Agende seu Horário",
+  title: "Império Barbearia | Agende seu Horário",
   description:
-    "Império Barbearia no Centro de São Paulo: corte, barba e combo com agendamento online das 08h às 18h.",
+    "Império Barbearia: corte, barba e combo com agendamento online das 08h às 18h.",
   keywords: [
-    "barbearia em são paulo",
-    "barbearia centro sp",
-    "corte masculino são paulo",
-    "agendamento barbearia",
-    "barba terapia",
+    "barbearia em Itapecerica da Serra",
+    "barbearia em Itapecerica da Serra",
+    "corte masculino em Itapecerica da Serra",  
+    "agendamento barbearia em Itapecerica da Serra",
+    "barba terapia em Itapecerica da Serra",
   ],
   openGraph: {
-    title: "Império Barbearia no Centro de São Paulo",
-    description: "Agende corte e barba com horário marcado no Centro de São Paulo.",
+    title: "Império Barbearia em Itapecerica da Serra",
+    description: "Agende corte e barba com horário marcado em Itapecerica da Serra.",
     locale: "pt_BR",
     type: "website",
     siteName: "Império Barbearia",
