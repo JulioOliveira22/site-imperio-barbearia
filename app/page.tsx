@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { BookingSelectionProvider } from "@/components/landing/BookingSelectionContext";
 import { BarbersSection } from "@/components/landing/BarbersSection";
 import { BookingSection } from "@/components/landing/BookingSection";
 import { FooterSection } from "@/components/landing/FooterSection";
@@ -8,7 +10,6 @@ import { RevealOnScroll } from "@/components/landing/RevealOnScroll";
 import { ServicesSection } from "@/components/landing/ServicesSection";
 import { WhatsAppFab } from "@/components/landing/WhatsAppFab";
 import { location } from "@/data/location";
-import { Suspense } from "react";
 
 function SectionFallback() {
   return (
@@ -18,7 +19,7 @@ function SectionFallback() {
   );
 }
 
-export default function Home() {
+function HomeContent() {
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "BarberShop",
@@ -56,21 +57,9 @@ export default function Home() {
         <RevealOnScroll delayMs={50}>
           <GallerySection />
         </RevealOnScroll>
-        <RevealOnScroll delayMs={60}>
-          <Suspense fallback={<SectionFallback />}>
-            <BarbersSection />
-          </Suspense>
-        </RevealOnScroll>
-        <RevealOnScroll delayMs={80}>
-          <Suspense fallback={<SectionFallback />}>
-            <ServicesSection />
-          </Suspense>
-        </RevealOnScroll>
-        <RevealOnScroll delayMs={120}>
-          <Suspense fallback={<SectionFallback />}>
-            <BookingSection />
-          </Suspense>
-        </RevealOnScroll>
+        <BarbersSection />
+        <ServicesSection />
+        <BookingSection />
       </main>
       <FooterSection />
       <WhatsAppFab />
@@ -80,5 +69,15 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<SectionFallback />}>
+      <BookingSelectionProvider>
+        <HomeContent />
+      </BookingSelectionProvider>
+    </Suspense>
   );
 }

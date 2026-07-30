@@ -20,14 +20,22 @@ export function ServiceCard({
   return (
     <button
       type="button"
-      onClick={onToggle}
-      disabled={disabled}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (disabled) return;
+        onToggle?.();
+      }}
       aria-pressed={selected}
-      className={`w-full rounded-xl border px-3 py-3 text-left transition-all duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45 ${
-        selected
-          ? "border-brand-gold bg-brand-gold/10"
-          : "border-white/10 bg-black/50 hover:border-brand-gold/35"
+      aria-disabled={disabled}
+      className={`w-full touch-manipulation select-none rounded-xl border px-3 py-3 text-left transition-colors duration-150 ${
+        disabled
+          ? "cursor-not-allowed opacity-45"
+          : selected
+            ? "cursor-pointer border-brand-gold bg-brand-gold/10"
+            : "cursor-pointer border-white/10 bg-black/50 active:bg-brand-gold/15"
       }`}
+      style={{ WebkitTapHighlightColor: "rgba(212,175,55,0.25)" }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -60,12 +68,12 @@ export function ServiceCard({
       <div className="mt-2.5 flex items-center justify-between gap-2 pl-7">
         <p className="text-base font-extrabold text-brand-gold">{service.price}</p>
         <span
-          className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${
+          className={`inline-flex min-h-8 items-center justify-center rounded-full px-3 text-[10px] font-bold uppercase tracking-[0.12em] ${
             selected
-              ? "text-brand-gold"
+              ? "bg-brand-gold text-black"
               : disabled && disabledHint
-                ? "text-zinc-500"
-                : "text-zinc-500"
+                ? "border border-white/15 text-zinc-500"
+                : "border border-brand-gold/45 text-brand-gold"
           }`}
         >
           {selected ? "Selecionado" : disabled && disabledHint ? disabledHint : "Adicionar"}

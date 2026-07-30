@@ -45,8 +45,8 @@ export function RevealOnScroll({ children, delayMs = 0 }: RevealOnScrollProps) {
       ref={ref}
       className={`duration-500 ease-out ${
         visible
-          ? "pointer-events-auto transform-none opacity-100 transition-opacity"
-          : "pointer-events-none opacity-0 transition-opacity md:translate-y-4 md:transition-all"
+          ? "transform-none opacity-100 transition-opacity"
+          : "opacity-100 transition-opacity md:translate-y-4 md:opacity-0 md:transition-all"
       }`}
       style={{ transitionDelay: `${delayMs}ms` }}
     >

@@ -3,21 +3,18 @@
 import { getBarberById } from "@/data/barbers";
 import {
   buildServiceIdsParam,
-  getServiceById,
   getServicesByIds,
-  parseServiceIdsParam,
   services,
   summarizeServices,
 } from "@/data/services";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useBookingSelection } from "./BookingSelectionContext";
 import { ServiceCard } from "./ServiceCard";
 
 export function ServicesSection() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const barberId = searchParams.get("barbeiro");
+  const { barberId, selectedIds, toggleService, isServiceBlocked } =
+    useBookingSelection();
   const selectedBarber = getBarberById(barberId);
 
   const categories = useMemo(
@@ -25,14 +22,6 @@ export function ServicesSection() {
     [],
   );
 
-  const selectedIds = useMemo(() => {
-    const fromList = parseServiceIdsParam(searchParams.get("servicos"));
-    const legacy = searchParams.get("servico");
-    if (fromList.length > 0) return fromList;
-    return legacy ? [legacy] : [];
-  }, [searchParams]);
-
-  // Sempre começa com uma categoria aberta (importante no mobile)
   const [openCategory, setOpenCategory] = useState<string>(categories[0] ?? "Corte");
 
   const selectedServices = useMemo(() => getServicesByIds(selectedIds), [selectedIds]);
@@ -46,53 +35,6 @@ export function ServicesSection() {
       })),
     [categories],
   );
-
-  function updateSelectedIds(nextIds: string[]) {
-    if (!barberId) return;
-
-    const params = new URLSearchParams();
-    params.set("barbeiro", barberId);
-    const encoded = buildServiceIdsParam(nextIds);
-    if (encoded) {
-      params.set("servicos", encoded);
-    }
-
-    router.replace(`/?${params.toString()}`, { scroll: false });
-  }
-
-  function toggleService(serviceId: string) {
-    if (!barberId) return;
-
-    const service = getServiceById(serviceId);
-    if (!service) return;
-
-    const exists = selectedIds.includes(serviceId);
-    if (exists) {
-      updateSelectedIds(selectedIds.filter((id) => id !== serviceId));
-      return;
-    }
-
-    if (service.category === "Corte") {
-      const withoutOtherCortes = selectedIds.filter((id) => {
-        const current = getServiceById(id);
-        return current?.category !== "Corte";
-      });
-      updateSelectedIds([...withoutOtherCortes, serviceId]);
-      return;
-    }
-
-    updateSelectedIds([...selectedIds, serviceId]);
-  }
-
-  function isServiceBlocked(serviceId: string) {
-    if (!barberId) return false;
-
-    const service = getServiceById(serviceId);
-    if (!service || service.category !== "Corte") return false;
-    if (selectedIds.includes(serviceId)) return false;
-
-    return selectedIds.some((id) => getServiceById(id)?.category === "Corte");
-  }
 
   const bookingHref = barberId
     ? `/?barbeiro=${barberId}${
@@ -121,7 +63,7 @@ export function ServicesSection() {
             <>
               Agendando com{" "}
               <span className="font-semibold text-brand-gold">{selectedBarber.name}</span>
-              . Toque para adicionar — em Corte, só uma opção.
+              . Toque no card para adicionar — em Corte, só uma opção.
             </>
           ) : (
             "Escolha um barbeiro e depois os serviços."
@@ -148,7 +90,7 @@ export function ServicesSection() {
               <button
                 type="button"
                 onClick={() => setOpenCategory(category)}
-                className="flex w-full items-center justify-between gap-3 px-3.5 py-3.5 text-left active:bg-white/[0.02]"
+                className="flex w-full touch-manipulation items-center justify-between gap-3 px-3.5 py-3.5 text-left active:bg-white/[0.02]"
                 aria-expanded={isOpen}
               >
                 <div className="min-w-0">
@@ -218,7 +160,7 @@ export function ServicesSection() {
             </div>
             <Link
               href={bookingHref}
-              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-brand-gold px-5 text-[11px] font-bold uppercase tracking-[0.12em] text-black transition-all hover:brightness-110 active:scale-[0.98]"
+              className="inline-flex min-h-11 shrink-0 touch-manipulation items-center justify-center rounded-full bg-brand-gold px-5 text-[11px] font-bold uppercase tracking-[0.12em] text-black"
             >
               Agendar
             </Link>

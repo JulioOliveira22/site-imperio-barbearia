@@ -1,31 +1,18 @@
 "use client";
 
 import { useMemo } from "react";
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getBarberById, getBarberInitials } from "@/data/barbers";
-import {
-  getServicesByIds,
-  parseServiceIdsParam,
-  summarizeServices,
-} from "@/data/services";
+import { getServicesByIds, summarizeServices } from "@/data/services";
 import { buildBookingNotes, getBarberBookingCalLink } from "@/lib/booking";
+import { useBookingSelection } from "./BookingSelectionContext";
 import { CalEmbed } from "./CalEmbed";
 
 export function BookingSection() {
-  const searchParams = useSearchParams();
-  const barberId = searchParams.get("barbeiro");
+  const { barberId, selectedIds } = useBookingSelection();
   const fallbackCalLink = process.env.NEXT_PUBLIC_CAL_LINK;
 
   const selectedBarber = getBarberById(barberId);
-
-  const selectedIds = useMemo(() => {
-    const fromList = parseServiceIdsParam(searchParams.get("servicos"));
-    const legacy = searchParams.get("servico");
-    if (fromList.length > 0) return fromList;
-    return legacy ? [legacy] : [];
-  }, [searchParams]);
-
   const selectedServices = useMemo(() => getServicesByIds(selectedIds), [selectedIds]);
   const summary = useMemo(() => summarizeServices(selectedServices), [selectedServices]);
 
@@ -48,7 +35,9 @@ export function BookingSection() {
       className="mx-auto w-full max-w-6xl snap-start px-5 py-10"
       aria-labelledby="agendamento-title"
     >
-      <p className="text-xs font-semibold uppercase tracking-premium text-brand-gold/90">Agendamento</p>
+      <p className="text-xs font-semibold uppercase tracking-premium text-brand-gold/90">
+        Agendamento
+      </p>
       <h2
         id="agendamento-title"
         className="mt-2 text-2xl font-black uppercase tracking-[0.08em] text-white"
@@ -61,7 +50,9 @@ export function BookingSection() {
 
       {!selectedBarber ? (
         <div className="mt-6 rounded-2xl border border-brand-gold/40 bg-gradient-to-r from-brand-gold/10 to-black/40 px-4 py-5">
-          <p className="text-sm font-semibold text-white">Selecione um barbeiro para continuar</p>
+          <p className="text-sm font-semibold text-white">
+            Selecione um barbeiro para continuar
+          </p>
           <p className="mt-2 text-sm text-zinc-300">
             Cada profissional tem a própria agenda. Escolha quem vai te atender.
           </p>
@@ -93,7 +84,9 @@ export function BookingSection() {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-300">
-                    {selectedServices.length > 1 ? "Serviços selecionados" : "Serviço selecionado"}
+                    {selectedServices.length > 1
+                      ? "Serviços selecionados"
+                      : "Serviço selecionado"}
                   </p>
                   {selectedServices.length > 0 ? (
                     <>
@@ -124,22 +117,19 @@ export function BookingSection() {
           <div className="mt-6 rounded-3xl border border-brand-gold/35 bg-gradient-to-b from-base-charcoal to-black p-4 shadow-glow">
             {selectedServices.length > 0 ? (
               <>
-                {selectedServices.length > 0 ? (
-                  <p className="mb-4 text-xs leading-relaxed text-zinc-400">
-                    Tempo dos serviços:{" "}
-                    <span className="text-zinc-200">{summary.durationLabel}</span>
-                    {summary.bookingMinutes !== summary.totalMinutes ? (
-                      <>
-                        {" "}
-                        · reservado no Cal:{" "}
-                        <span className="text-zinc-200">{summary.bookingDurationLabel}</span>
-                        {" "}
-                        (arredondado para a duração disponível)
-                      </>
-                    ) : null}
-                    . A lista de serviços vai nas observações do agendamento.
-                  </p>
-                ) : null}
+                <p className="mb-4 text-xs leading-relaxed text-zinc-400">
+                  Tempo dos serviços:{" "}
+                  <span className="text-zinc-200">{summary.durationLabel}</span>
+                  {summary.bookingMinutes !== summary.totalMinutes ? (
+                    <>
+                      {" "}
+                      · reservado no Cal:{" "}
+                      <span className="text-zinc-200">{summary.bookingDurationLabel}</span>{" "}
+                      (arredondado para a duração disponível)
+                    </>
+                  ) : null}
+                  . A lista de serviços vai nas observações do agendamento.
+                </p>
                 <CalEmbed
                   calLink={selectedCalLink}
                   notes={bookingNotes}
