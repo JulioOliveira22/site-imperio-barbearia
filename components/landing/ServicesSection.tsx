@@ -20,6 +20,11 @@ export function ServicesSection() {
   const barberId = searchParams.get("barbeiro");
   const selectedBarber = getBarberById(barberId);
 
+  const categories = useMemo(
+    () => Array.from(new Set(services.map((service) => service.category))),
+    [],
+  );
+
   const selectedIds = useMemo(() => {
     const fromList = parseServiceIdsParam(searchParams.get("servicos"));
     const legacy = searchParams.get("servico");
@@ -27,14 +32,11 @@ export function ServicesSection() {
     return legacy ? [legacy] : [];
   }, [searchParams]);
 
+  // Sempre começa com uma categoria aberta (importante no mobile)
+  const [openCategory, setOpenCategory] = useState<string>(categories[0] ?? "Corte");
+
   const selectedServices = useMemo(() => getServicesByIds(selectedIds), [selectedIds]);
   const summary = useMemo(() => summarizeServices(selectedServices), [selectedServices]);
-
-  const categories = useMemo(
-    () => Array.from(new Set(services.map((service) => service.category))),
-    [],
-  );
-  const [openCategory, setOpenCategory] = useState<string>("");
 
   const groupedServices = useMemo(
     () =>
@@ -46,24 +48,16 @@ export function ServicesSection() {
   );
 
   function updateSelectedIds(nextIds: string[]) {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("servico");
+    if (!barberId) return;
 
-    if (!barberId) {
-      params.delete("servicos");
-      router.replace(`/?${params.toString()}#barbeiros`, { scroll: false });
-      return;
-    }
-
+    const params = new URLSearchParams();
     params.set("barbeiro", barberId);
     const encoded = buildServiceIdsParam(nextIds);
     if (encoded) {
       params.set("servicos", encoded);
-    } else {
-      params.delete("servicos");
     }
 
-    router.replace(`/?${params.toString()}#servicos`, { scroll: false });
+    router.replace(`/?${params.toString()}`, { scroll: false });
   }
 
   function toggleService(serviceId: string) {
@@ -78,7 +72,6 @@ export function ServicesSection() {
       return;
     }
 
-    // Em Corte, só um serviço por vez
     if (service.category === "Corte") {
       const withoutOtherCortes = selectedIds.filter((id) => {
         const current = getServiceById(id);
@@ -92,7 +85,7 @@ export function ServicesSection() {
   }
 
   function isServiceBlocked(serviceId: string) {
-    if (!barberId) return true;
+    if (!barberId) return false;
 
     const service = getServiceById(serviceId);
     if (!service || service.category !== "Corte") return false;
@@ -110,7 +103,7 @@ export function ServicesSection() {
   return (
     <section
       id="servicos"
-      className="mx-auto w-full max-w-6xl snap-start px-5 py-8"
+      className="relative z-10 mx-auto w-full max-w-6xl snap-start px-5 py-8"
       aria-labelledby="servicos-title"
     >
       <div className="mb-4">
@@ -128,7 +121,7 @@ export function ServicesSection() {
             <>
               Agendando com{" "}
               <span className="font-semibold text-brand-gold">{selectedBarber.name}</span>
-              . Pode marcar mais de um — em Corte, só uma opção.
+              . Toque para adicionar — em Corte, só uma opção.
             </>
           ) : (
             "Escolha um barbeiro e depois os serviços."
@@ -136,14 +129,17 @@ export function ServicesSection() {
         </p>
       </div>
 
-      <div className={`space-y-2 ${selectedServices.length > 0 ? "pb-24" : ""}`}>
+      <div className={`space-y-2 ${selectedServices.length > 0 ? "pb-28" : ""}`}>
         {groupedServices.map(({ category, items }) => {
           const isOpen = openCategory === category;
+          const selectedInCategory = items.filter((item) =>
+            selectedIds.includes(item.id),
+          ).length;
 
           return (
             <div
               key={category}
-              className={`overflow-hidden rounded-2xl border transition-colors duration-200 ${
+              className={`rounded-2xl border transition-colors duration-200 ${
                 isOpen
                   ? "border-brand-gold/40 bg-black/50"
                   : "border-white/10 bg-black/30"
@@ -151,8 +147,8 @@ export function ServicesSection() {
             >
               <button
                 type="button"
-                onClick={() => setOpenCategory(isOpen ? "" : category)}
-                className="flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left active:bg-white/[0.02]"
+                onClick={() => setOpenCategory(category)}
+                className="flex w-full items-center justify-between gap-3 px-3.5 py-3.5 text-left active:bg-white/[0.02]"
                 aria-expanded={isOpen}
               >
                 <div className="min-w-0">
@@ -161,10 +157,11 @@ export function ServicesSection() {
                   </p>
                   <p className="mt-0.5 text-[11px] uppercase tracking-[0.1em] text-zinc-500">
                     {items.length} {items.length > 1 ? "opções" : "opção"}
+                    {selectedInCategory > 0 ? ` · ${selectedInCategory} selecionado` : ""}
                   </p>
                 </div>
                 <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-sm text-brand-gold transition-transform duration-200 ${
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm text-brand-gold transition-transform duration-200 ${
                     isOpen
                       ? "rotate-90 border-brand-gold/50 bg-brand-gold/10"
                       : "border-white/15"
@@ -175,32 +172,30 @@ export function ServicesSection() {
                 </span>
               </button>
 
-              <div
-                className={`grid transition-all duration-300 ease-out ${
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="space-y-2 border-t border-white/10 px-2.5 py-2.5">
-                    {items.map((service) => {
-                      const blocked = isServiceBlocked(service.id);
+              {isOpen ? (
+                <div className="space-y-2 border-t border-white/10 px-2.5 py-2.5">
+                  {items.map((service) => {
+                    const blocked = isServiceBlocked(service.id);
 
-                      return (
-                        <ServiceCard
-                          key={service.id}
-                          service={service}
-                          selected={selectedIds.includes(service.id)}
-                          disabled={!barberId || blocked}
-                          disabledHint={
-                            blocked ? "Já há um corte selecionado" : undefined
-                          }
-                          onToggle={() => toggleService(service.id)}
-                        />
-                      );
-                    })}
-                  </div>
+                    return (
+                      <ServiceCard
+                        key={service.id}
+                        service={service}
+                        selected={selectedIds.includes(service.id)}
+                        disabled={!barberId || blocked}
+                        disabledHint={
+                          !barberId
+                            ? "Escolha o barbeiro"
+                            : blocked
+                              ? "Já há um corte selecionado"
+                              : undefined
+                        }
+                        onToggle={() => toggleService(service.id)}
+                      />
+                    );
+                  })}
                 </div>
-              </div>
+              ) : null}
             </div>
           );
         })}

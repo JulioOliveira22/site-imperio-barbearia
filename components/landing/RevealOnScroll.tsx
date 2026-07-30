@@ -17,6 +17,14 @@ export function RevealOnScroll({ children, delayMs = 0 }: RevealOnScrollProps) {
       return;
     }
 
+    // Se já está na viewport (ex.: âncora #servicos), mostra na hora
+    const rect = target.getBoundingClientRect();
+    const alreadyInView = rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
+    if (alreadyInView) {
+      setVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
@@ -25,11 +33,10 @@ export function RevealOnScroll({ children, delayMs = 0 }: RevealOnScrollProps) {
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.05, rootMargin: "80px 0px" },
     );
 
     observer.observe(target);
-
     return () => observer.disconnect();
   }, []);
 
@@ -38,8 +45,8 @@ export function RevealOnScroll({ children, delayMs = 0 }: RevealOnScrollProps) {
       ref={ref}
       className={`duration-500 ease-out ${
         visible
-          ? "transform-none opacity-100 transition-opacity"
-          : "opacity-0 transition-opacity md:translate-y-4 md:transition-all"
+          ? "pointer-events-auto transform-none opacity-100 transition-opacity"
+          : "pointer-events-none opacity-0 transition-opacity md:translate-y-4 md:transition-all"
       }`}
       style={{ transitionDelay: `${delayMs}ms` }}
     >
