@@ -17,11 +17,10 @@ const cinzel = Cinzel({
 export const metadata: Metadata = {
   title: "Império Barbearia | Agende seu Horário",
   description:
-    "Império Barbearia: corte, barba e combo com agendamento online das 08h às 18h.",
+    "Império Barbearia: corte, barba e combo com agendamento online das 09h às 19h.",
   keywords: [
     "barbearia em Itapecerica da Serra",
-    "barbearia em Itapecerica da Serra",
-    "corte masculino em Itapecerica da Serra",  
+    "corte masculino em Itapecerica da Serra",
     "agendamento barbearia em Itapecerica da Serra",
     "barba terapia em Itapecerica da Serra",
   ],

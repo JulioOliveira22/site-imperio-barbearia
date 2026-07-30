@@ -7,10 +7,6 @@ type CalEmbedProps = {
 };
 
 export function CalEmbed({ calLink }: CalEmbedProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [shouldRenderEmbed, setShouldRenderEmbed] = useState(false);
-
   if (!calLink) {
     return (
       <div className="rounded-2xl border border-brand-gold/50 bg-black/50 p-5">
@@ -27,12 +23,15 @@ export function CalEmbed({ calLink }: CalEmbedProps) {
     );
   }
 
-  const calendarUrl = `https://cal.com/${calLink}?embed=true&theme=dark&hideEventTypeDetails=false&locale=pt-BR`;
+  return <CalEmbedInner key={calLink} calLink={calLink} />;
+}
 
-  useEffect(() => {
-    setIsLoaded(false);
-    setShouldRenderEmbed(false);
-  }, [calendarUrl]);
+function CalEmbedInner({ calLink }: { calLink: string }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [shouldRenderEmbed, setShouldRenderEmbed] = useState(false);
+
+  const calendarUrl = `https://cal.com/${calLink}?embed=true&theme=dark&hideEventTypeDetails=false&locale=pt-BR`;
 
   useEffect(() => {
     if (shouldRenderEmbed) {

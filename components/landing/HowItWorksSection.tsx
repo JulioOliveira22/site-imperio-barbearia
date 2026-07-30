@@ -1,16 +1,16 @@
 export function HowItWorksSection() {
   const steps = [
     {
+      title: "Escolha o barbeiro",
+      description: "Selecione o profissional que vai te atender.",
+    },
+    {
       title: "Escolha o serviço",
       description: "Selecione o corte, barba ou combo que deseja fazer.",
     },
     {
       title: "Escolha o horário",
-      description: "Veja a agenda em tempo real e escolha o melhor horário.",
-    },
-    {
-      title: "Confirme no WhatsApp",
-      description: "Receba a confirmação e os detalhes do atendimento.",
+      description: "Veja a agenda em tempo real e confirme o atendimento pelo site.",
     },
   ];
 

@@ -43,7 +43,7 @@ export function HeroSection() {
         </p>
 
         <a
-          href="#servicos"
+          href="#barbeiros"
           className="mt-6 inline-flex min-h-16 w-full items-center justify-center rounded-full bg-brand-gold px-6 text-sm font-bold uppercase tracking-[0.14em] text-black shadow-glow transition-all duration-200 ease-out hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:scale-[0.99] animate-pulse"
         >
           AGENDAR HORÁRIO

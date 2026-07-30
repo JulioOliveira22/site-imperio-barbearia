@@ -5,7 +5,6 @@ export type Service = {
   duration: string;
   price: string;
   description: string;
-  calLink?: string;
 };
 
 export const services: Service[] = [
@@ -17,7 +16,6 @@ export const services: Service[] = [
     price: "R$ 60,00",
     description:
       "Alinhamento perfeito, textura no topo e finalização com pomada matte.",
-    calLink: "julio-cesar-antunes-de-oliveira-rmmraz/corte-classico-executivo",
   },
   {
     id: "barba-terapia-toalha-quente",
@@ -27,7 +25,6 @@ export const services: Service[] = [
     price: "R$ 45,00",
     description:
       "Aparagem na tesoura, alinhamento na navalha e hidratação profunda.",
-    calLink: "julio-cesar-antunes-de-oliveira-rmmraz/barba-terapia-com-toalha-quente",
   },
   {
     id: "combo-corte-barba",
@@ -37,7 +34,6 @@ export const services: Service[] = [
     price: "R$ 95,00",
     description:
       "A experiência completa de renovação visual e relaxamento.",
-    calLink: "julio-cesar-antunes-de-oliveira-rmmraz/combo-corte-barba",
   },
   {
     id: "corte-degrade-navalhado",

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Foto genérica de barbeiro">
+  <defs>
+    <linearGradient id="bg2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#171717"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg2)"/>
+  <circle cx="200" cy="200" r="180" fill="#121212" stroke="#D4AF37" stroke-width="4" opacity="0.35"/>
+  <circle cx="200" cy="150" r="58" fill="#2f2f2f"/>
+  <path d="M100 332c16-68 66-100 100-100s84 32 100 100" fill="#2f2f2f"/>
+  <path d="M145 145c10-28 35-42 55-42s45 14 55 42" fill="#1f1f1f"/>
+  <circle cx="200" cy="150" r="58" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.45"/>
+</svg>
