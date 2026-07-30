@@ -20,8 +20,9 @@ export function HeroSection() {
           <Image
             src="/imperio-logo.png"
             alt="Logo da Império Barbearia"
-            width={600}
-            height={600}
+            width={352}
+            height={352}
+            sizes="176px"
             className="h-full w-full scale-[1.2] object-cover object-center"
             priority
           />
