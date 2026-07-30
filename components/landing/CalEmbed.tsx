@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 
 type CalEmbedProps = {
   calLink?: string;
+  notes?: string;
+  durationMinutes?: number;
 };
 
-export function CalEmbed({ calLink }: CalEmbedProps) {
+export function CalEmbed({ calLink, notes, durationMinutes }: CalEmbedProps) {
   if (!calLink) {
     return (
       <div className="rounded-2xl border border-brand-gold/50 bg-black/50 p-5">
@@ -23,15 +25,44 @@ export function CalEmbed({ calLink }: CalEmbedProps) {
     );
   }
 
-  return <CalEmbedInner key={calLink} calLink={calLink} />;
+  return (
+    <CalEmbedInner
+      key={`${calLink}-${notes ?? ""}-${durationMinutes ?? 0}`}
+      calLink={calLink}
+      notes={notes}
+      durationMinutes={durationMinutes}
+    />
+  );
 }
 
-function CalEmbedInner({ calLink }: { calLink: string }) {
+function CalEmbedInner({
+  calLink,
+  notes,
+  durationMinutes,
+}: {
+  calLink: string;
+  notes?: string;
+  durationMinutes?: number;
+}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [shouldRenderEmbed, setShouldRenderEmbed] = useState(false);
 
-  const calendarUrl = `https://cal.com/${calLink}?embed=true&theme=dark&hideEventTypeDetails=false&locale=pt-BR`;
+  const params = new URLSearchParams({
+    embed: "true",
+    theme: "dark",
+    hideEventTypeDetails: "false",
+    locale: "pt-BR",
+  });
+
+  if (notes) {
+    params.set("notes", notes);
+  }
+  if (durationMinutes && durationMinutes > 0) {
+    params.set("duration", String(durationMinutes));
+  }
+
+  const calendarUrl = `https://cal.com/${calLink}?${params.toString()}`;
 
   useEffect(() => {
     if (shouldRenderEmbed) {

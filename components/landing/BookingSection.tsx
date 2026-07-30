@@ -3,31 +3,43 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getBarberById, getBarberCalLink, getBarberInitials } from "@/data/barbers";
-import { services } from "@/data/services";
+import { getBarberById, getBarberInitials } from "@/data/barbers";
+import {
+  getServicesByIds,
+  parseServiceIdsParam,
+  summarizeServices,
+} from "@/data/services";
+import { buildBookingNotes, getBarberBookingCalLink } from "@/lib/booking";
 import { CalEmbed } from "./CalEmbed";
 
 export function BookingSection() {
   const searchParams = useSearchParams();
-  const serviceId = searchParams.get("servico");
   const barberId = searchParams.get("barbeiro");
   const fallbackCalLink = process.env.NEXT_PUBLIC_CAL_LINK;
 
   const selectedBarber = getBarberById(barberId);
 
-  const bookableServices = useMemo(() => {
-    if (!selectedBarber) return [];
-    return services.filter((service) => Boolean(selectedBarber.calLinks[service.id]));
-  }, [selectedBarber]);
+  const selectedIds = useMemo(() => {
+    const fromList = parseServiceIdsParam(searchParams.get("servicos"));
+    const legacy = searchParams.get("servico");
+    if (fromList.length > 0) return fromList;
+    return legacy ? [legacy] : [];
+  }, [searchParams]);
 
-  const selectedService = useMemo(() => {
-    if (!serviceId) return undefined;
-    return bookableServices.find((service) => service.id === serviceId);
-  }, [bookableServices, serviceId]);
+  const selectedServices = useMemo(() => getServicesByIds(selectedIds), [selectedIds]);
+  const summary = useMemo(() => summarizeServices(selectedServices), [selectedServices]);
 
-  const selectedCalLink =
-    selectedBarber && selectedService
-      ? (getBarberCalLink(selectedBarber, selectedService.id) ?? fallbackCalLink)
+  const selectedCalLink = selectedBarber
+    ? getBarberBookingCalLink(selectedBarber, selectedServices, fallbackCalLink)
+    : undefined;
+
+  const bookingNotes =
+    selectedBarber && selectedServices.length > 0
+      ? buildBookingNotes(
+          selectedBarber.name,
+          selectedServices,
+          summary.bookingDurationLabel,
+        )
       : undefined;
 
   return (
@@ -44,7 +56,7 @@ export function BookingSection() {
         Escolha o melhor horário
       </h2>
       <p className="mt-3 text-sm font-light leading-relaxed text-zinc-300">
-        Escolha o barbeiro e o serviço para abrir a agenda correta.
+        Escolha o barbeiro e um ou mais serviços para abrir a agenda.
       </p>
 
       {!selectedBarber ? (
@@ -79,22 +91,30 @@ export function BookingSection() {
 
             <div className="rounded-2xl border border-brand-gold/40 bg-gradient-to-r from-brand-gold/10 to-black/40 px-4 py-3 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
               <div className="flex items-start justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-300">
-                    Serviço selecionado
+                    {selectedServices.length > 1 ? "Serviços selecionados" : "Serviço selecionado"}
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
-                    {selectedService?.name ?? "Escolha um serviço"}
-                  </p>
-                  {selectedService ? (
-                    <p className="mt-1 text-xs uppercase tracking-[0.1em] text-zinc-400">
-                      {selectedService.duration} · {selectedService.price}
-                    </p>
-                  ) : null}
+                  {selectedServices.length > 0 ? (
+                    <>
+                      <ul className="mt-2 space-y-1">
+                        {selectedServices.map((service) => (
+                          <li key={service.id} className="text-sm font-semibold text-white">
+                            {service.name}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-2 text-xs uppercase tracking-[0.1em] text-zinc-400">
+                        {summary.durationLabel} · {summary.priceLabel}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="mt-1 text-sm font-semibold text-white">Escolha os serviços</p>
+                  )}
                 </div>
-                {selectedService ? (
+                {selectedServices.length > 0 ? (
                   <span className="inline-flex items-center rounded-full border border-brand-gold/60 bg-brand-gold/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-gold">
-                    ✓ pronto
+                    {selectedServices.length}×
                   </span>
                 ) : null}
               </div>
@@ -102,15 +122,37 @@ export function BookingSection() {
           </div>
 
           <div className="mt-6 rounded-3xl border border-brand-gold/35 bg-gradient-to-b from-base-charcoal to-black p-4 shadow-glow">
-            {selectedService ? (
-              <CalEmbed calLink={selectedCalLink} />
+            {selectedServices.length > 0 ? (
+              <>
+                {selectedServices.length > 0 ? (
+                  <p className="mb-4 text-xs leading-relaxed text-zinc-400">
+                    Tempo dos serviços:{" "}
+                    <span className="text-zinc-200">{summary.durationLabel}</span>
+                    {summary.bookingMinutes !== summary.totalMinutes ? (
+                      <>
+                        {" "}
+                        · reservado no Cal:{" "}
+                        <span className="text-zinc-200">{summary.bookingDurationLabel}</span>
+                        {" "}
+                        (arredondado para a duração disponível)
+                      </>
+                    ) : null}
+                    . A lista de serviços vai nas observações do agendamento.
+                  </p>
+                ) : null}
+                <CalEmbed
+                  calLink={selectedCalLink}
+                  notes={bookingNotes}
+                  durationMinutes={summary.bookingMinutes}
+                />
+              </>
             ) : (
               <div className="rounded-2xl border border-brand-gold/50 bg-black/50 p-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.12em] text-brand-gold">
-                  Escolha um serviço
+                  Escolha os serviços
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-                  Selecione um serviço disponível para abrir a agenda de {selectedBarber.name}.
+                  Selecione um ou mais serviços para abrir a agenda de {selectedBarber.name}.
                 </p>
                 <Link
                   href={barberId ? `/?barbeiro=${barberId}#servicos` : "/#servicos"}

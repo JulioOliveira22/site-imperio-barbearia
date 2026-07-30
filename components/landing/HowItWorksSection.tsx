@@ -5,8 +5,8 @@ export function HowItWorksSection() {
       description: "Selecione o profissional que vai te atender.",
     },
     {
-      title: "Escolha o serviço",
-      description: "Selecione o corte, barba ou combo que deseja fazer.",
+      title: "Escolha os serviços",
+      description: "Marque um ou mais serviços que deseja fazer.",
     },
     {
       title: "Escolha o horário",

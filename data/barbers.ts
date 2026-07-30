@@ -1,22 +1,24 @@
+import { services } from "@/data/services";
+
 export type Barber = {
   id: string;
   name: string;
   /** WhatsApp em E.164 sem +, ex: "55119XXXXXXXX" */
   whatsapp: string;
+  /** Agenda principal no Cal.com (evento Atendimento) */
+  calendarLink: string;
   /** Opcional — quando tiver foto real, coloque o caminho (ex: /barbers/luiz.jpg) */
   photo?: string;
-  /** Links do Cal.com por serviço — ajuste cada barbeiro depois */
-  calLinks: Partial<Record<string, string>>;
+  /** Opcional — override por serviço; se vazio, usa calendarLink */
+  calLinks?: Partial<Record<string, string>>;
 };
 
-const sharedPlaceholderLinks: Partial<Record<string, string>> = {
-  "corte-classico-executivo":
-    "julio-cesar-antunes-de-oliveira-rmmraz/corte-classico-executivo",
-  "barba-terapia-toalha-quente":
-    "julio-cesar-antunes-de-oliveira-rmmraz/barba-terapia-com-toalha-quente",
-  "combo-corte-barba":
-    "julio-cesar-antunes-de-oliveira-rmmraz/combo-corte-barba",
-};
+/** Evento único com múltiplas durações — troque o username do 2º barbeiro quando tiver conta própria */
+const ATENDIMENTO_CAL_LINK = "julio-cesar-antunes-de-oliveira-rmmraz/atendimento";
+
+function buildServiceCalLinks(calendarLink: string) {
+  return Object.fromEntries(services.map((service) => [service.id, calendarLink]));
+}
 
 export const barbers: Barber[] = [
   {
@@ -24,14 +26,17 @@ export const barbers: Barber[] = [
     name: "Luiz",
     // Placeholder — troque pelo número real
     whatsapp: "5511912817535",
-    calLinks: { ...sharedPlaceholderLinks },
+    calendarLink: ATENDIMENTO_CAL_LINK,
+    calLinks: buildServiceCalLinks(ATENDIMENTO_CAL_LINK),
   },
   {
     id: "isaque",
     name: "Isaque",
     // Placeholder — troque pelo número real
     whatsapp: "5511912817535",
-    calLinks: { ...sharedPlaceholderLinks },
+    // Por enquanto mesma agenda — troque quando Isaque tiver Cal próprio
+    calendarLink: ATENDIMENTO_CAL_LINK,
+    calLinks: buildServiceCalLinks(ATENDIMENTO_CAL_LINK),
   },
 ];
 
@@ -41,7 +46,7 @@ export function getBarberById(id: string | null | undefined) {
 }
 
 export function getBarberCalLink(barber: Barber, serviceId: string) {
-  return barber.calLinks[serviceId];
+  return barber.calLinks?.[serviceId] ?? barber.calendarLink;
 }
 
 export function getBarberInitials(name: string) {
