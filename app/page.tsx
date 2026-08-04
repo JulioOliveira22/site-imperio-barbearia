@@ -6,7 +6,9 @@ import { FooterSection } from "@/components/landing/FooterSection";
 import { GallerySection } from "@/components/landing/GallerySection";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { PortfolioSection } from "@/components/landing/PortfolioSection";
 import { RevealOnScroll } from "@/components/landing/RevealOnScroll";
+import { ProductsSection } from "@/components/landing/ProductsSection";
 import { ServicesSection } from "@/components/landing/ServicesSection";
 import { WhatsAppFab } from "@/components/landing/WhatsAppFab";
 import { location } from "@/data/location";
@@ -58,8 +60,10 @@ function HomeContent() {
           <GallerySection />
         </RevealOnScroll>
         <BarbersSection />
+        <PortfolioSection />
         <ServicesSection />
         <BookingSection />
+        <ProductsSection />
       </main>
       <FooterSection />
       <WhatsAppFab />

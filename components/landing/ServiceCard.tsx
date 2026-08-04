@@ -66,7 +66,14 @@ export function ServiceCard({
       </div>
 
       <div className="mt-2.5 flex items-center justify-between gap-2 pl-7">
-        <p className="text-base font-extrabold text-brand-gold">{service.price}</p>
+        <p className="text-base font-extrabold text-brand-gold">
+          {service.priceFrom ? (
+            <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-400">
+              a partir de
+            </span>
+          ) : null}
+          {service.price}
+        </p>
         <span
           className={`inline-flex min-h-8 items-center justify-center rounded-full px-3 text-[10px] font-bold uppercase tracking-[0.12em] ${
             selected

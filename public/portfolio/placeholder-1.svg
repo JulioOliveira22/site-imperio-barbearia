@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="32%" r="75%">
+      <stop offset="0%" stop-color="#2a2210"/>
+      <stop offset="100%" stop-color="#090909"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <g stroke="#d4af37" stroke-width="26" fill="none" opacity="0.45" stroke-linecap="round">
+    <circle cx="420" cy="760" r="70"/>
+    <circle cx="420" cy="1090" r="70"/>
+    <path d="M480 800 760 1070M480 1050 760 780"/>
+  </g>
+  <text x="540" y="1330" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="bold" letter-spacing="14" fill="#d4af37" opacity="0.85">FOTO DO CORTE</text>
+  <text x="540" y="1410" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" letter-spacing="6" fill="#8a8a8a">adicione em public/portfolio</text>
+</svg>

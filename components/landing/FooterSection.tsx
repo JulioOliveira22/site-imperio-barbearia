@@ -4,6 +4,7 @@ import {
   barbers,
   formatWhatsAppDisplay,
   getBarberInitials,
+  getInstagramUrl,
   getWhatsAppUrl,
 } from "@/data/barbers";
 import { getMapsEmbedUrl, getMapsOpenUrl, location } from "@/data/location";
@@ -83,31 +84,51 @@ export function FooterSection() {
               <ul className="mt-3 space-y-2.5">
                 {barbers.map((barber) => (
                   <li key={barber.id}>
-                    <a
-                      href={getWhatsAppUrl(
-                        barber.whatsapp,
-                        `Olá, ${barber.name}! Vim pelo site da Império Barbearia.`,
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/40 px-3 py-3 transition-all duration-200 hover:border-[#25D366]/45 hover:bg-[#25D366]/10 active:scale-[0.99]"
-                    >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#25D366]/15 text-sm font-bold tracking-[0.06em] text-[#25D366] ring-1 ring-[#25D366]/35">
-                        {getBarberInitials(barber.name)}
+                    <div className="rounded-xl border border-white/10 bg-black/40 px-3 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-gold/15 text-sm font-bold tracking-[0.06em] text-brand-gold ring-1 ring-brand-gold/35">
+                          {getBarberInitials(barber.name)}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-white">{barber.name}</p>
+                          <p className="mt-0.5 text-xs text-zinc-400">
+                            {formatWhatsAppDisplay(barber.whatsapp)}
+                          </p>
+                        </div>
+                        <a
+                          href={getWhatsAppUrl(
+                            barber.whatsapp,
+                            `Olá, ${barber.name}! Vim pelo site da Império Barbearia.`,
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`WhatsApp de ${barber.name}`}
+                          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform duration-200 hover:brightness-110 active:scale-95"
+                        >
+                          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+                            <path d="M19.03 4.97A9.9 9.9 0 0 0 12 2a9.96 9.96 0 0 0-8.64 14.95L2 22l5.2-1.35A10 10 0 0 0 12 22a10 10 0 0 0 7.03-17.03Zm-7.03 15.34a8.3 8.3 0 0 1-4.24-1.17l-.3-.18-3.08.8.82-3-.2-.31a8.31 8.31 0 1 1 7 3.86Zm4.56-6.23c-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.57.12-.17.25-.65.81-.8.97-.15.17-.3.19-.55.06-.25-.12-1.05-.39-2-1.25-.73-.65-1.23-1.45-1.38-1.69-.14-.25-.02-.38.1-.5.12-.12.25-.31.37-.46.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.57-1.37-.78-1.88-.2-.47-.41-.4-.57-.4l-.49-.01c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.07 0 1.22.9 2.4 1.02 2.56.12.17 1.76 2.68 4.27 3.76.6.26 1.07.41 1.43.52.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29Z" />
+                          </svg>
+                        </a>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-white">{barber.name}</p>
-                        <p className="mt-0.5 text-xs text-zinc-400">
-                          {formatWhatsAppDisplay(barber.whatsapp)}
-                        </p>
-                      </div>
-                      <span className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full bg-[#25D366] px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-white">
-                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden>
-                          <path d="M19.03 4.97A9.9 9.9 0 0 0 12 2a9.96 9.96 0 0 0-8.64 14.95L2 22l5.2-1.35A10 10 0 0 0 12 22a10 10 0 0 0 7.03-17.03Zm-7.03 15.34a8.3 8.3 0 0 1-4.24-1.17l-.3-.18-3.08.8.82-3-.2-.31a8.31 8.31 0 1 1 7 3.86Z" />
-                        </svg>
-                        WhatsApp
-                      </span>
-                    </a>
+                      <a
+                        href={getInstagramUrl(barber.instagram)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Instagram de ${barber.name}`}
+                        className="mt-2.5 flex min-h-9 items-center gap-2 rounded-lg border-t border-white/[0.06] pt-2 text-zinc-300 transition-colors duration-200 hover:text-brand-gold"
+                      >
+                        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-gold/35 text-brand-gold">
+                          <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden>
+                            <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" stroke="currentColor" strokeWidth="1.6" />
+                            <circle cx="12" cy="12" r="3.8" stroke="currentColor" strokeWidth="1.6" />
+                            <circle cx="17" cy="7" r="1.1" fill="currentColor" />
+                          </svg>
+                        </span>
+                        <span className="min-w-0 truncate text-xs font-medium">
+                          @{barber.instagram}
+                        </span>
+                      </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -158,9 +179,6 @@ export function FooterSection() {
             <p className="tracking-[0.08em]">
               © {new Date().getFullYear()} <span className="text-zinc-300">Império Barbearia</span> -
               Todos os direitos reservados.
-            </p>
-            <p className="tracking-[0.12em] uppercase text-zinc-400">
-              Desenvolvido por <span className="font-semibold text-brand-gold">JulioOliveira</span>
             </p>
           </div>
         </div>

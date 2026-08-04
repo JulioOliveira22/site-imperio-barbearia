@@ -5,6 +5,8 @@ export type Barber = {
   name: string;
   /** WhatsApp em E.164 sem +, ex: "55119XXXXXXXX" */
   whatsapp: string;
+  /** Handle do Instagram, sem @ */
+  instagram: string;
   /** Agenda principal no Cal.com (evento Atendimento) */
   calendarLink: string;
   /** Opcional — quando tiver foto real, coloque o caminho (ex: /barbers/luiz.jpg) */
@@ -26,6 +28,7 @@ export const barbers: Barber[] = [
     name: "Luiz",
     // Placeholder — troque pelo número real
     whatsapp: "5511912817535",
+    instagram: "luizbarbersp",
     calendarLink: ATENDIMENTO_CAL_LINK,
     calLinks: buildServiceCalLinks(ATENDIMENTO_CAL_LINK),
   },
@@ -34,6 +37,7 @@ export const barbers: Barber[] = [
     name: "Isaque",
     // Placeholder — troque pelo número real
     whatsapp: "5511912817535",
+    instagram: "isaque_germano.barber",
     // Por enquanto mesma agenda — troque quando Isaque tiver Cal próprio
     calendarLink: ATENDIMENTO_CAL_LINK,
     calLinks: buildServiceCalLinks(ATENDIMENTO_CAL_LINK),
@@ -74,4 +78,8 @@ export function getWhatsAppUrl(whatsapp: string, message?: string) {
   const base = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
   if (!message) return base;
   return `${base}?text=${encodeURIComponent(message)}`;
+}
+
+export function getInstagramUrl(instagram: string) {
+  return `https://www.instagram.com/${instagram}/`;
 }

@@ -30,4 +30,9 @@ export const amenities: Amenity[] = [
     label: "TV",
     description: "Conteúdo enquanto você espera",
   },
+  {
+    id: "kids",
+    label: "Atendimento Kid",
+    description: "Espaço e cuidado para os pequenos",
+  },
 ];

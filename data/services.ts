@@ -1,10 +1,12 @@
 export type Service = {
   id: string;
   name: string;
-  category: "Corte" | "Barba" | "Estética";
+  category: "Corte" | "Barba" | "Química" | "Depilação" | "Estética";
   duration: string;
   price: string;
   description: string;
+  /** Preço base — o valor final é definido na avaliação (exibe "a partir de") */
+  priceFrom?: boolean;
 };
 
 export const services: Service[] = [
@@ -41,6 +43,64 @@ export const services: Service[] = [
     description: "Barba com toalha quente e ritual de relaxamento.",
   },
   {
+    id: "relaxamento-capilar",
+    name: "Relaxamento Capilar",
+    category: "Química",
+    duration: "20 min",
+    price: "R$ 35,00",
+    description: "Reduz o volume e alinha os fios com naturalidade.",
+  },
+  {
+    id: "pigmentacao",
+    name: "Pigmentação",
+    category: "Química",
+    duration: "20 min",
+    price: "R$ 20,00",
+    description: "Disfarça falhas e realça o contorno do corte e da barba.",
+  },
+  {
+    id: "platinado",
+    name: "Platinado",
+    category: "Química",
+    duration: "2h 15m",
+    price: "R$ 150,00",
+    priceFrom: true,
+    description: "Descoloração global com tonalização. Valor final conforme avaliação.",
+  },
+  {
+    id: "luzes",
+    name: "Luzes",
+    category: "Química",
+    duration: "2h 15m",
+    price: "R$ 60,00",
+    priceFrom: true,
+    description: "Mechas para iluminar o visual. Valor final conforme avaliação.",
+  },
+  {
+    id: "depilacao-nariz-orelha",
+    name: "Depilação Nariz + Orelha",
+    category: "Depilação",
+    duration: "20 min",
+    price: "R$ 20,00",
+    description: "Remoção com cera nas duas regiões em um só atendimento.",
+  },
+  {
+    id: "depilacao-nariz",
+    name: "Depilação Nariz",
+    category: "Depilação",
+    duration: "10 min",
+    price: "R$ 10,00",
+    description: "Remoção com cera na região do nariz.",
+  },
+  {
+    id: "depilacao-orelha",
+    name: "Depilação Orelha",
+    category: "Depilação",
+    duration: "10 min",
+    price: "R$ 10,00",
+    description: "Remoção com cera na região da orelha.",
+  },
+  {
     id: "sobrancelha",
     name: "Sobrancelha",
     category: "Estética",
@@ -63,6 +123,14 @@ export const services: Service[] = [
     duration: "25 min",
     price: "R$ 20,00",
     description: "Hidratação para revitalizar e dar brilho aos fios.",
+  },
+  {
+    id: "hidratacao-profunda",
+    name: "Hidratação Profunda",
+    category: "Estética",
+    duration: "35 min",
+    price: "R$ 35,00",
+    description: "Tratamento intensivo para fios ressecados ou com química.",
   },
 ];
 
@@ -125,7 +193,7 @@ export function getServicesByIds(ids: string[]) {
 
 /** Durações do evento Atendimento no Cal.com */
 export const CAL_AVAILABLE_DURATIONS = [
-  10, 15, 20, 25, 30, 40, 45, 50, 60, 75, 80, 90, 120,
+  10, 15, 20, 25, 30, 40, 45, 50, 60, 75, 80, 90, 120, 150, 180,
 ] as const;
 
 /** Arredonda para cima até a próxima duração válida do Cal */
@@ -146,13 +214,17 @@ export function summarizeServices(selected: Service[]) {
     (sum, service) => sum + parsePriceToNumber(service.price),
     0,
   );
+  const hasFromPrice = selected.some((service) => service.priceFrom);
 
   return {
     totalMinutes,
     bookingMinutes,
     totalPrice,
+    hasFromPrice,
     durationLabel: formatDurationLabel(totalMinutes),
     bookingDurationLabel: formatDurationLabel(bookingMinutes),
-    priceLabel: formatPriceBRL(totalPrice),
+    priceLabel: hasFromPrice
+      ? `a partir de ${formatPriceBRL(totalPrice)}`
+      : formatPriceBRL(totalPrice),
   };
 }

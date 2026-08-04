@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="70%" r="80%">
+      <stop offset="0%" stop-color="#1f1c0e"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <g stroke="#d4af37" stroke-width="24" fill="none" opacity="0.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M400 660c0-60 60-100 140-100s140 40 140 100v120c0 90-60 150-140 150s-140-60-140-150Z"/>
+    <path d="M420 1010c-80 40-130 120-130 220h500c0-100-50-180-130-220"/>
+  </g>
+  <text x="540" y="1440" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="bold" letter-spacing="14" fill="#d4af37" opacity="0.85">SEU TRABALHO AQUI</text>
+  <text x="540" y="1520" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" letter-spacing="6" fill="#8a8a8a">mostre o resultado na cadeira</text>
+</svg>

@@ -1,6 +1,6 @@
 "use client";
 
-import { getBarberById } from "@/data/barbers";
+import { barbers, getBarberById, getWhatsAppUrl } from "@/data/barbers";
 import {
   buildServiceIdsParam,
   getServicesByIds,
@@ -141,6 +141,42 @@ export function ServicesSection() {
             </div>
           );
         })}
+
+        <div className="rounded-2xl border border-brand-gold/45 bg-gradient-to-r from-brand-gold/12 to-black/40 px-3.5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-bold uppercase tracking-[0.1em] text-brand-gold">
+                Assinatura Mensal
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                Plano mensal com condição especial. O valor é combinado direto com o
+                barbeiro.
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full border border-brand-gold/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-brand-gold">
+              Consulte
+            </span>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {(selectedBarber ? [selectedBarber] : barbers).map((barber) => (
+              <a
+                key={barber.id}
+                href={getWhatsAppUrl(
+                  barber.whatsapp,
+                  `Olá, ${barber.name}! Tenho interesse na assinatura mensal da Império Barbearia.`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-10 touch-manipulation items-center gap-2 rounded-full bg-[#25D366] px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white transition-transform duration-150 active:scale-[0.98]"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+                  <path d="M19.03 4.97A9.9 9.9 0 0 0 12 2a9.96 9.96 0 0 0-8.64 14.95L2 22l5.2-1.35A10 10 0 0 0 12 22a10 10 0 0 0 7.03-17.03Zm-7.03 15.34a8.3 8.3 0 0 1-4.24-1.17l-.3-.18-3.08.8.82-3-.2-.31a8.31 8.31 0 1 1 7 3.86Z" />
+                </svg>
+                Falar com {barber.name}
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
 
       {selectedServices.length > 0 && barberId ? (

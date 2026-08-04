@@ -67,6 +67,24 @@ export function AmenityIcon({
           <path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       );
+    case "kids":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="7.5" r="3" stroke="currentColor" strokeWidth="1.6" />
+          <path
+            d="M6.5 20a5.5 5.5 0 0 1 11 0"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M12 4.5c0-1.2.8-2 2-2"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>
